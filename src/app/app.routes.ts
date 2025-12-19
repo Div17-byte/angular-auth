@@ -10,6 +10,10 @@ export const routes: Routes = [
     loadComponent: () => import('./components/oauth-login/oauth-login.component').then(m => m.OAuthLoginComponent)
   },
   {
+    path: 'auth0',
+    loadComponent: () => import('./components/auth0/auth0.component').then(m => m.Auth0Component)
+  },
+  {
     path: 'google-login',
     loadComponent: () => import('./components/google-login/google-login.component').then(m => m.GoogleLoginComponent)
   },

@@ -12,7 +12,8 @@
 
 .main-card-wrapper {
   width: 100%;
-  max-width: 420px;
+  max-width: fit-content;
+  width: 360px;
   background: #0b1020;
   color: #e6eefc;
   border-radius: 12px;

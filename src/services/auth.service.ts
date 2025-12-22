@@ -17,14 +17,14 @@ export class AuthService {
   }
 
   setToken(token: string) {
-    localStorage.setItem('jwt_token', token);
+    sessionStorage.setItem('jwt_token', token);
   }
 
   getToken(): string | null {
-    return localStorage.getItem('jwt_token');
+    return sessionStorage.getItem('jwt_token');
   }
 
   logout() {
-    localStorage.removeItem('jwt_token');
+    sessionStorage.removeItem('jwt_token');
   }
 }

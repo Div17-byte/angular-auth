@@ -1,5 +1,40 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global styles */
 * {
   margin: 0;
   padding: 0;
+}
+
+/* Theme CSS variables - light mode (default) */
+html.light-theme {
+  --primary: #6200ee;
+  --surface: #ffffff;
+  --muted: #6b7280;
+  --bg: #f6f7fb;
+  --card-shadow: 0 6px 18px rgba(22, 27, 40, 0.08);
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --border-color: #e5e7eb;
+  --footer-bg: #f9fafb;
+}
+
+/* Theme CSS variables - dark mode */
+html.dark-theme {
+  --primary: #6200ee;
+  --surface: #1f2937;
+  --muted: #9ca3af;
+  --bg: #111827;
+  --card-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+  --text-primary: #f3f4f6;
+  --text-secondary: #d1d5db;
+  --border-color: #374151;
+  --footer-bg: #111827;
+}
+
+/* Smooth transitions for theme changes */
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
 }

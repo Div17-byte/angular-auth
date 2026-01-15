@@ -1,21 +1,5 @@
 <div class="app-container">
-  <ng-container *ngIf="auth.isLoading$ | async; else ready">
-    <div class="loading-state">
-      <div class="loading-text">Loading...</div>
-    </div>
-  </ng-container>
-
-  <ng-template #ready>
-    <ng-container *ngIf="auth.error$ | async as error; else main">
-      <div class="error-state">
-        <div class="error-title">Oops!</div>
-        <div class="error-message">Something went wrong</div>
-        <div class="error-sub-message">{{ error?.message }}</div>
-      </div>
-    </ng-container>
-  </ng-template>
-
-  <ng-template #main>
+  <ng-container *ngIf="isAuthenticated$ | async as isAuth; else notLoggedIn">
     <div class="main-card-wrapper">
       <img
         src="https://cdn.auth0.com/quantum-assets/dist/latest/logos/auth0/auth0-lockup-en-ondark.png"
@@ -23,8 +7,7 @@
         class="auth0-logo"
       />
       <h1 class="main-title">Welcome to Sample0</h1>
-
-      <ng-container *ngIf="isAuthenticated$ | async; else notLoggedIn">
+      <ng-container *ngIf="isAuth; else notLoggedInInner">
         <div class="logged-in-section">
           <div class="logged-in-message">Successfully authenticated!</div>
           <h2 class="profile-section-title">Your Profile</h2>
@@ -35,12 +18,27 @@
         </div>
       </ng-container>
 
-      <ng-template #notLoggedIn>
+      <ng-template #notLoggedInInner>
         <div class="action-card">
           <p class="action-text">Get started by signing in to your account</p>
           <app-login-button></app-login-button>
         </div>
       </ng-template>
+    </div>
+  </ng-container>
+
+  <ng-template #notLoggedIn>
+    <div class="main-card-wrapper">
+      <img
+        src="https://cdn.auth0.com/quantum-assets/dist/latest/logos/auth0/auth0-lockup-en-ondark.png"
+        alt="Auth0 Logo"
+        class="auth0-logo"
+      />
+      <h1 class="main-title">Welcome to Sample0</h1>
+      <div class="action-card">
+        <p class="action-text">Get started by signing in to your account</p>
+        <app-login-button></app-login-button>
+      </div>
     </div>
   </ng-template>
 </div>

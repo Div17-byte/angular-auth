@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { AuthService } from '@auth0/auth0-angular';
+import { AuthApiService } from '../services/auth-api.service';
 
 @Component({
   selector: 'app-logout-button',
@@ -12,10 +12,10 @@ import { AuthService } from '@auth0/auth0-angular';
   styles: []
 })
 export class LogoutButtonComponent {
-  private auth = inject(AuthService);
+  private auth = inject(AuthApiService);
 
   logout(): void {
-    this.auth.logout({ logoutParams: { returnTo: window.location.origin } });
     localStorage.clear();
+    this.auth.logout();
   }
 }

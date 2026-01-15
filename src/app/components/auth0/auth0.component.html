@@ -1,44 +1,31 @@
-<div class="app-container">
-  <ng-container *ngIf="isAuthenticated$ | async as isAuth; else notLoggedIn">
-    <div class="main-card-wrapper">
-      <img
-        src="https://cdn.auth0.com/quantum-assets/dist/latest/logos/auth0/auth0-lockup-en-ondark.png"
-        alt="Auth0 Logo"
-        class="auth0-logo"
-      />
-      <h1 class="main-title">Welcome to Sample0</h1>
-      <ng-container *ngIf="isAuth; else notLoggedInInner">
-        <div class="logged-in-section">
-          <div class="logged-in-message">Successfully authenticated!</div>
-          <h2 class="profile-section-title">Your Profile</h2>
-          <div class="profile-card">
-            <app-profile></app-profile>
-          </div>
-          <app-logout-button></app-logout-button>
-        </div>
-      </ng-container>
-
-      <ng-template #notLoggedInInner>
-        <div class="action-card">
-          <p class="action-text">Get started by signing in to your account</p>
-          <app-login-button></app-login-button>
-        </div>
-      </ng-template>
+<div class="login-container">
+  <div class="login-card">
+    <div class="card-header">
+      <span class="app-icon">🎬</span>
+      <h1 class="app-title">MovieDB</h1>
     </div>
-  </ng-container>
 
-  <ng-template #notLoggedIn>
-    <div class="main-card-wrapper">
-      <img
-        src="https://cdn.auth0.com/quantum-assets/dist/latest/logos/auth0/auth0-lockup-en-ondark.png"
-        alt="Auth0 Logo"
-        class="auth0-logo"
-      />
-      <h1 class="main-title">Welcome to Sample0</h1>
-      <div class="action-card">
-        <p class="action-text">Get started by signing in to your account</p>
+    <div class="card-body">
+      <h2 class="subtitle">Welcome Back</h2>
+      <p class="description">
+        Sign in to your account to explore our movie collection
+      </p>
+
+      <div class="login-button-wrapper">
         <app-login-button></app-login-button>
       </div>
+
+      <div class="divider">
+        <span>or</span>
+      </div>
+
+      <p class="footer-text">Sign in with your Auth0 account to get started</p>
     </div>
-  </ng-template>
+
+    <div class="card-footer">
+      <p class="footer-link">New to MovieDB? Contact your administrator</p>
+    </div>
+  </div>
+
+  <div class="background-decoration"></div>
 </div>

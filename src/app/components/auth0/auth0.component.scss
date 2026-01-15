@@ -1,94 +1,230 @@
-/* Auth0 component styles - matching login look-and-feel */
-.app-container {
+/* Modern Material-like login page matching dashboard design */
+:root {
+  --primary: #6200ee;
+  --surface: #ffffff;
+  --muted: #6b7280;
+  --bg: #f6f7fb;
+  --card-shadow: 0 6px 18px rgba(22, 27, 40, 0.08);
+  --text-primary: #0f172a;
+  --text-secondary: #6b7280;
+  --border-color: #e5e7eb;
+  --footer-bg: #f9fafb;
+}
+
+:root.dark-theme {
+  --surface: #1f2937;
+  --muted: #9ca3af;
+  --bg: #111827;
+  --card-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  --text-primary: #f3f4f6;
+  --text-secondary: #d1d5db;
+  --border-color: #374151;
+  --footer-bg: #111827;
+}
+
+.login-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f6f8ff 0%, #eef6ff 100%);
-  padding: 2rem;
+  background: linear-gradient(135deg, var(--bg) 0%, #ede9ff 100%);
+  padding: 1.5rem;
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s ease;
 }
 
-.main-card-wrapper {
+:root.dark-theme .login-container {
+  background: linear-gradient(135deg, #0f172a 0%, #1a1f3a 100%);
+}
+
+.background-decoration {
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(
+    circle,
+    rgba(98, 0, 238, 0.1) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+:root.dark-theme .background-decoration {
+  background: radial-gradient(
+    circle,
+    rgba(98, 0, 238, 0.15) 0%,
+    transparent 70%
+  );
+}
+
+.login-card {
   width: 100%;
   max-width: 420px;
-  background: #0b1020;
-  color: #e6eefc;
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 10px 30px rgba(11, 16, 32, 0.45);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(22, 27, 40, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+:root.dark-theme .login-card {
+  background: rgba(45, 55, 80, 0.95);
+  border: 1px solid rgba(107, 114, 128, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.card-header {
+  background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
+  color: white;
+  padding: 2rem 1.5rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-.auth0-logo {
-  width: 160px;
-  max-width: 70%;
-  margin: 0 auto 1rem;
-  display: block;
+.app-icon {
+  font-size: 2.5rem;
 }
 
-.main-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-  color: #e6eefc;
+.app-title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
 }
 
-.loading-state,
-.error-state {
-  min-height: 40vh;
+.card-body {
+  padding: 2rem 1.5rem;
+}
+
+.subtitle {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #0f172a;
+  transition: color 0.3s ease;
+}
+
+:root.dark-theme .subtitle {
+  color: #f3f4f6 !important;
+}
+
+.description {
+  margin: 0 0 1.75rem 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  transition: color 0.3s ease;
+}
+
+:root.dark-theme .description {
+  color: #d1d5db !important;
+}
+
+.login-button-wrapper {
+  margin-bottom: 1.5rem;
+}
+
+.divider {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  color: #6b7280;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: color 0.3s ease;
 }
 
-.loading-text {
-  color: #374151;
-  font-weight: 600;
+:root.dark-theme .divider {
+  color: #d1d5db !important;
 }
 
-.error-title {
-  color: #ef4444;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border-color);
+  transition: background 0.3s ease;
 }
 
-.error-message {
-  color: #fca5a5;
-  margin-bottom: 0.25rem;
+.footer-text {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.9rem;
+  text-align: center;
+  transition: color 0.3s ease;
 }
 
-.error-sub-message {
-  color: #9ca3af;
-  font-size: 0.95rem;
+:root.dark-theme .footer-text {
+  color: #d1d5db !important;
 }
 
-.logged-in-section {
-  padding: 1rem 0;
+.card-footer {
+  padding: 1.25rem 1.5rem;
+  background: var(--footer-bg);
+  border-top: 1px solid var(--border-color);
+  transition: all 0.3s ease;
 }
 
-.logged-in-message {
-  color: #9ae6b4;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+.footer-link {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.85rem;
+  text-align: center;
+  transition: color 0.3s ease;
 }
 
-.action-card {
-  margin-top: 1rem;
-}
-
-.action-text {
-  color: #cbd5e1;
-  margin-bottom: 0.75rem;
+:root.dark-theme .footer-link {
+  color: #d1d5db !important;
 }
 
 @media (max-width: 480px) {
-  .main-card-wrapper {
-    padding: 1.25rem;
-    border-radius: 10px;
+  .login-container {
+    padding: 1rem;
   }
-  .auth0-logo {
-    width: 140px;
+
+  .login-card {
+    max-width: 100%;
+  }
+
+  .card-header {
+    padding: 1.5rem 1rem;
+  }
+
+  .card-body {
+    padding: 1.5rem 1rem;
+  }
+
+  .card-footer {
+    padding: 1rem;
+  }
+
+  .subtitle {
+    font-size: 1.25rem;
+  }
+
+  .app-icon {
+    font-size: 2rem;
+  }
+
+  .app-title {
+    font-size: 1.5rem;
   }
 }

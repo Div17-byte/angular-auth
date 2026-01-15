@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { auth } = require("express-openid-connect");
+const mongoose = require("mongoose");
 
 require("dotenv").config();
 const app = express();
@@ -27,6 +28,92 @@ const config = {
 };
 
 app.use(auth(config));
+
+// --- Auth middleware: ensure user is logged in ---
+const requireAuth = (req, res, next) => {
+  const isAuth =
+    req.oidc && req.oidc.isAuthenticated && req.oidc.isAuthenticated();
+  console.log(
+    "[requireAuth] isAuthenticated:",
+    isAuth,
+    "user:",
+    req.oidc?.user?.name || "none"
+  );
+  if (!isAuth) {
+    return res.status(401).json({ error: "Unauthorized: please login first" });
+  }
+  next();
+};
+
+// --- MongoDB Atlas connection (via Mongoose) ---
+const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI || null;
+if (!mongoUri) {
+  console.warn(
+    "Warning: No MongoDB connection string found. Set MONGODB_URI in your .env."
+  );
+} else {
+  mongoose
+    .connect(mongoUri)
+    .then(() => {
+      console.log("Connected to MongoDB Atlas");
+      console.log("Mongoose connection name:", mongoose.connection.name);
+      console.log("Mongoose host:", mongoose.connection.host);
+    })
+    .catch((err) => console.error("MongoDB connection error:", err));
+}
+
+// API: list collections and fetch documents from a collection
+app.get("/api/collections", requireAuth, async (req, res) => {
+  try {
+    if (!mongoose.connection || !mongoose.connection.client) {
+      return res.status(500).json({ error: "No DB connection" });
+    }
+
+    // allow overriding the database using ?db=sample_mflix
+    const requestedDb = req.query.db;
+    const db = requestedDb
+      ? mongoose.connection.client.db(requestedDb)
+      : mongoose.connection.db;
+
+    const cols = await db.listCollections().toArray();
+    console.log(
+      "collections for db",
+      db.databaseName,
+      cols.map((c) => c.name)
+    );
+    return res.json({
+      db: db.databaseName,
+      collections: cols.map((c) => c.name),
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/api/collections/:name", requireAuth, async (req, res) => {
+  try {
+    const name = req.params.name;
+    if (!mongoose.connection || !mongoose.connection.client) {
+      return res.status(500).json({ error: "No DB connection" });
+    }
+
+    const requestedDb = req.query.db;
+    const db = requestedDb
+      ? mongoose.connection.client.db(requestedDb)
+      : mongoose.connection.db;
+
+    console.log("fetching from db", db.databaseName, "collection", name);
+    const docs = await db.collection(name).find({}).limit(100).toArray();
+    return res.json({
+      db: db.databaseName,
+      collection: name,
+      count: docs.length,
+      docs,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
 
 // After successful Auth0 login the library redirects to the baseURL ('/').
 // If the user is authenticated, redirect to the frontend callback route so

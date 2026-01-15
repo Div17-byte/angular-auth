@@ -11,8 +11,7 @@ export class AuthApiService {
 
   isAuthenticated(): Observable<boolean> {
     return this.http.get<{ authenticated: boolean }>(`${API_BASE}/auth/status`, { withCredentials: true }).pipe(
-      map(r => !!r.authenticated),
-      startWith(false)
+      map(r => !!r.authenticated)
     );
   }
 

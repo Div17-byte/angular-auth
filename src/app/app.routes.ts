@@ -11,6 +11,11 @@ export const routes: Routes = [
     path: 'dashboard',
     loadComponent: () => import('./components/dashboard/dashboard.component').then(m => m.DashboardComponent),
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'add-movie',
+    loadComponent: () => import('./components/add-movie/add-movie.component').then(m => m.AddMovieComponent),
+    canActivate: [AuthGuard]
   }
 
 ];

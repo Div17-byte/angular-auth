@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule, AsyncPipe, NgForOf, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { MoviesService } from '../../services/movies.service';
 import { NavbarComponent } from '../navbar.component';
 
@@ -13,8 +14,9 @@ import { NavbarComponent } from '../navbar.component';
     <div class="dashboard">
       <header class="topbar">
         <div class="title">Movies</div>
-        <div class="search">
-          <input [(ngModel)]="query" placeholder="Search title or plot" />
+        <div class="actions">
+          <input [(ngModel)]="query" placeholder="Search title or plot" class="search-input" />
+          <button class="btn-add" (click)="openAddMovie()">➕ Add Movie</button>
         </div>
       </header>
 
@@ -23,10 +25,16 @@ import { NavbarComponent } from '../navbar.component';
           <article *ngFor="let m of filtered(movies)" class="card">
             <div class="poster" *ngIf="m.poster; else noPoster">
               <img [src]="m.poster" alt="{{m.title}} poster" />
+              <div class="card-actions">
+                <button class="action-btn" (click)="editMovie(m._id)" title="Edit">✏️</button>
+              </div>
             </div>
             <ng-template #noPoster>
               <div class="poster placeholder">
                 <div class="placeholder-icon">🎬</div>
+                <div class="card-actions">
+                  <button class="action-btn" (click)="editMovie(m._id)" title="Edit">✏️</button>
+                </div>
               </div>
             </ng-template>
             <div class="card-body">
@@ -53,7 +61,7 @@ export class DashboardComponent {
   movies$;
   query = '';
 
-  constructor(private movies: MoviesService) {
+  constructor(private readonly movies: MoviesService, private readonly router: Router) {
     this.movies$ = this.movies.getMovies('sample_mflix');
   }
 
@@ -62,10 +70,18 @@ export class DashboardComponent {
     const q = this.query.toLowerCase().trim();
     return (list || []).filter((m) => {
       return (
-        (m.title && m.title.toLowerCase().includes(q)) ||
-        (m.plot && m.plot.toLowerCase().includes(q)) ||
-        (m.fullplot && m.fullplot.toLowerCase().includes(q))
+        m.title?.toLowerCase().includes(q) ||
+        m.plot?.toLowerCase().includes(q) ||
+        m.fullplot?.toLowerCase().includes(q)
       );
     });
+  }
+
+  openAddMovie() {
+    this.router.navigate(['/add-movie']);
+  }
+
+  editMovie(id: string) {
+    this.router.navigate(['/add-movie'], { queryParams: { id } });
   }
 }

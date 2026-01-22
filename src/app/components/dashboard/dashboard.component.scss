@@ -21,10 +21,18 @@
   padding: 1.5rem;
   background: linear-gradient(180deg, var(--bg), var(--bg) 60%);
   min-height: calc(100vh - 60px);
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial;
   color: var(--text-primary);
-  transition: background 0.3s ease, color 0.3s ease;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
 }
 
 :root.dark-theme .dashboard {
@@ -45,7 +53,13 @@
   color: var(--primary);
 }
 
-.search input {
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.search-input {
   width: 320px;
   max-width: 40vw;
   padding: 0.5rem 0.75rem;
@@ -55,18 +69,39 @@
   color: var(--text-primary);
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
   outline: none;
-  transition: box-shadow 0.15s ease, border-color 0.15s ease,
+  transition:
+    box-shadow 0.15s ease,
+    border-color 0.15s ease,
     background 0.3s ease;
 }
 
-:root.dark-theme .search input {
+:root.dark-theme .search-input {
   border: 1px solid rgba(107, 114, 128, 0.3);
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3) inset;
 }
 
-.search input:focus {
+.search-input:focus {
   box-shadow: 0 4px 16px rgba(98, 0, 238, 0.08);
   border-color: rgba(98, 0, 238, 0.4);
+}
+
+.btn-add {
+  padding: 0.5rem 1rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-add:hover {
+  background: #5a00d6;
+  box-shadow: 0 6px 16px rgba(98, 0, 238, 0.3);
+  transform: translateY(-2px);
 }
 
 .grid {
@@ -86,7 +121,10 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: var(--card-shadow);
-  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.3s ease;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    background 0.3s ease;
 }
 
 :root.dark-theme .card:hover {
@@ -106,6 +144,7 @@
   align-items: center;
   justify-content: center;
   transition: background 0.3s ease;
+  position: relative;
 }
 
 :root.dark-theme .poster {
@@ -117,6 +156,45 @@
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.card-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.card:hover .card-actions {
+  opacity: 1;
+}
+
+.action-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  background: #5a00d6;
+  transform: scale(1.1);
 }
 .card-body {
   padding: 0.85rem 1rem;
@@ -157,9 +235,16 @@
 }
 
 @media (max-width: 640px) {
-  .search input {
+  .search-input {
     width: 100%;
     max-width: none;
+  }
+  .actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  .btn-add {
+    width: 100%;
   }
   .poster {
     height: 160px;

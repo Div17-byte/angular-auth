@@ -13,7 +13,7 @@ app.use(
   cors({
     origin: process.env.FRONTEND_ORIGIN || "http://localhost:4200",
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 
@@ -37,7 +37,7 @@ const requireAuth = (req, res, next) => {
     "[requireAuth] isAuthenticated:",
     isAuth,
     "user:",
-    req.oidc?.user?.name || "none"
+    req.oidc?.user?.name || "none",
   );
   if (!isAuth) {
     return res.status(401).json({ error: "Unauthorized: please login first" });
@@ -49,7 +49,7 @@ const requireAuth = (req, res, next) => {
 const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI || null;
 if (!mongoUri) {
   console.warn(
-    "Warning: No MongoDB connection string found. Set MONGODB_URI in your .env."
+    "Warning: No MongoDB connection string found. Set MONGODB_URI in your .env.",
   );
 } else {
   mongoose
@@ -79,7 +79,7 @@ app.get("/api/collections", requireAuth, async (req, res) => {
     console.log(
       "collections for db",
       db.databaseName,
-      cols.map((c) => c.name)
+      cols.map((c) => c.name),
     );
     return res.json({
       db: db.databaseName,
@@ -146,6 +146,160 @@ app.get("/auth/token", (req, res) => {
   const idToken = req.oidc.idToken ? req.oidc.idToken : null;
 
   res.json({ accessToken, idToken });
+});
+
+// --- Movie API endpoints ---
+// POST: Add a new movie
+app.post("/api/movies", requireAuth, async (req, res) => {
+  try {
+    if (!mongoose.connection || !mongoose.connection.client) {
+      return res.status(500).json({ error: "No DB connection" });
+    }
+
+    const db = mongoose.connection.client.db("sample_mflix");
+    const moviesCollection = db.collection("movies");
+
+    const movieData = {
+      title: req.body.title,
+      year: req.body.year,
+      rated: req.body.rated || "",
+      genres: req.body.genres || [],
+      plot: req.body.plot || "",
+      runtime: req.body.runtime || 0,
+      poster: req.body.poster || "", // Base64 encoded image
+      directors: req.body.directors || [],
+      createdAt: new Date(),
+      createdBy: req.oidc?.user?.sub || "unknown",
+    };
+
+    const result = await moviesCollection.insertOne(movieData);
+    console.log("Movie added:", result.insertedId);
+
+    return res.status(201).json({
+      message: "Movie added successfully",
+      id: result.insertedId,
+    });
+  } catch (err) {
+    console.error("Error adding movie:", err);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// GET: Fetch a movie by ID
+app.get("/api/movies/:id", requireAuth, async (req, res) => {
+  try {
+    if (!mongoose.connection || !mongoose.connection.client) {
+      return res.status(500).json({ error: "No DB connection" });
+    }
+
+    const db = mongoose.connection.client.db("sample_mflix");
+    const moviesCollection = db.collection("movies");
+
+    const { ObjectId } = require("mongodb");
+    let movieId;
+    try {
+      movieId = new ObjectId(req.params.id);
+    } catch (e) {
+      return res.status(400).json({ error: "Invalid movie ID" });
+    }
+
+    const movie = await moviesCollection.findOne({ _id: movieId });
+
+    if (!movie) {
+      return res.status(404).json({ error: "Movie not found" });
+    }
+
+    return res.json(movie);
+  } catch (err) {
+    console.error("Error fetching movie:", err);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// PUT: Update a movie
+app.put("/api/movies/:id", requireAuth, async (req, res) => {
+  try {
+    if (!mongoose.connection || !mongoose.connection.client) {
+      return res.status(500).json({ error: "No DB connection" });
+    }
+
+    const db = mongoose.connection.client.db("sample_mflix");
+    const moviesCollection = db.collection("movies");
+
+    const { ObjectId } = require("mongodb");
+    let movieId;
+    try {
+      movieId = new ObjectId(req.params.id);
+    } catch (e) {
+      return res.status(400).json({ error: "Invalid movie ID" });
+    }
+
+    const updateData = {
+      title: req.body.title,
+      year: req.body.year,
+      rated: req.body.rated || "",
+      genres: req.body.genres || [],
+      plot: req.body.plot || "",
+      runtime: req.body.runtime || 0,
+      poster: req.body.poster || "",
+      directors: req.body.directors || [],
+      updatedAt: new Date(),
+      updatedBy: req.oidc?.user?.sub || "unknown",
+    };
+
+    const result = await moviesCollection.updateOne(
+      { _id: movieId },
+      { $set: updateData },
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ error: "Movie not found" });
+    }
+
+    console.log("Movie updated:", movieId);
+    return res.json({
+      message: "Movie updated successfully",
+      id: movieId,
+    });
+  } catch (err) {
+    console.error("Error updating movie:", err);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE: Delete a movie
+app.delete("/api/movies/:id", requireAuth, async (req, res) => {
+  try {
+    if (!mongoose.connection || !mongoose.connection.client) {
+      return res.status(500).json({ error: "No DB connection" });
+    }
+
+    const db = mongoose.connection.client.db("sample_mflix");
+    const moviesCollection = db.collection("movies");
+
+    const { ObjectId } = require("mongodb");
+    let movieId;
+    try {
+      movieId = new ObjectId(req.params.id);
+    } catch (e) {
+      return res.status(400).json({ error: "Invalid movie ID" });
+    }
+
+    const result = await moviesCollection.deleteOne({ _id: movieId });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "Movie not found" });
+    }
+
+    console.log("Movie deleted:", movieId);
+    return res.json({
+      message: "Movie deleted successfully",
+      id: movieId,
+    });
+  } catch (err) {
+    console.error("Error deleting movie:", err);
+    return res.status(500).json({ error: err.message });
+  }
 });
 
 const port = process.env.PORT || 3000;

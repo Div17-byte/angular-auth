@@ -6,7 +6,10 @@ import { of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
-  constructor(private auth: AuthApiService, private router: Router) {}
+  constructor(
+    private auth: AuthApiService,
+    private router: Router,
+  ) {}
 
   canActivate() {
     return this.auth.isAuthenticated().pipe(
@@ -25,7 +28,7 @@ export class AuthGuard implements CanActivate {
         console.error('[AuthGuard] Auth check error:', err);
         this.router.navigate(['/']);
         return of(false);
-      })
+      }),
     );
   }
 }

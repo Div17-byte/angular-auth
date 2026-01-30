@@ -22,7 +22,7 @@ export class AuthApiService {
       .get<{ authenticated: boolean; user?: any }>(`${API_BASE}/auth/status`, {
         withCredentials: true,
       })
-      .pipe(map((r) => (r && r.authenticated ? r.user ?? null : null)));
+      .pipe(map((r) => (r && r.authenticated ? (r.user ?? null) : null)));
   }
 
   login(): void {
@@ -32,7 +32,7 @@ export class AuthApiService {
   fetchTokens(): Observable<{ accessToken?: string; idToken?: string }> {
     return this.http.get<{ accessToken?: string; idToken?: string }>(
       `${API_BASE}/auth/token`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -51,23 +51,22 @@ export class AuthApiService {
   logout(): void {
     const returnTo = FRONTEND_ORIGIN;
     this.http
-      .get<{ logoutUrl: string }>(
-        `${API_BASE}/auth/logout-url?returnTo=${encodeURIComponent(returnTo)}`,
-        { withCredentials: true }
-      )
+      .get<{
+        logoutUrl: string;
+      }>(`${API_BASE}/auth/logout-url?returnTo=${encodeURIComponent(returnTo)}`, { withCredentials: true })
       .subscribe({
         next: (r) => {
           if (r?.logoutUrl) {
             globalThis.location.href = r.logoutUrl;
           } else {
             globalThis.location.href = `${API_BASE}/logout?returnTo=${encodeURIComponent(
-              returnTo
+              returnTo,
             )}`;
           }
         },
         error: () => {
           globalThis.location.href = `${API_BASE}/logout?returnTo=${encodeURIComponent(
-            returnTo
+            returnTo,
           )}`;
         },
       });

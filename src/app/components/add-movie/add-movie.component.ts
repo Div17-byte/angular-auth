@@ -20,19 +20,27 @@ import { NavbarComponent } from '../navbar.component';
           </div>
 
           <form (ngSubmit)="submitForm()" class="form-container">
-            <!-- Read-only info when editing existing movies -->
             <div class="info-section" *ngIf="isEditMode && movie.imdb">
               <div class="info-row">
                 <span class="info-label">IMDB Rating:</span>
-                <span class="info-value">{{ movie.imdb?.rating }} ⭐ ({{ movie.imdb?.votes }} votes)</span>
+                <span class="info-value"
+                  >{{ movie.imdb?.rating }} ⭐ ({{
+                    movie.imdb?.votes
+                  }}
+                  votes)</span
+                >
               </div>
               <div class="info-row" *ngIf="movie.cast?.length">
                 <span class="info-label">Cast:</span>
-                <span class="info-value">{{ movie.cast?.slice(0, 3).join(', ') }}</span>
+                <span class="info-value">{{
+                  movie.cast?.slice(0, 3).join(', ')
+                }}</span>
               </div>
               <div class="info-row" *ngIf="movie.countries?.length">
                 <span class="info-label">Country:</span>
-                <span class="info-value">{{ movie.countries?.join(', ') }}</span>
+                <span class="info-value">{{
+                  movie.countries?.join(', ')
+                }}</span>
               </div>
             </div>
 
@@ -184,8 +192,18 @@ import { NavbarComponent } from '../navbar.component';
               >
                 Cancel
               </button>
-              <button type="submit" class="btn btn-primary" [disabled]="isLoading">
-                {{ isLoading ? '📤 Saving...' : (isEditMode ? 'Update Movie' : 'Add Movie') }}
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="isLoading"
+              >
+                {{
+                  isLoading
+                    ? '📤 Saving...'
+                    : isEditMode
+                      ? 'Update Movie'
+                      : 'Add Movie'
+                }}
               </button>
             </div>
 
@@ -197,7 +215,7 @@ import { NavbarComponent } from '../navbar.component';
       </div>
     </div>
   `,
-  styleUrls: ['./add-movie.component.scss']
+  styleUrls: ['./add-movie.component.scss'],
 })
 export class AddMovieComponent implements OnInit {
   movie: any = {
@@ -206,7 +224,7 @@ export class AddMovieComponent implements OnInit {
     rated: '',
     plot: '',
     runtime: '',
-    poster: ''
+    poster: '',
   };
 
   genresText = '';
@@ -224,7 +242,7 @@ export class AddMovieComponent implements OnInit {
   constructor(
     private readonly moviesService: MoviesService,
     private readonly router: Router,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
   ) {}
 
   ngOnInit() {
@@ -265,7 +283,7 @@ export class AddMovieComponent implements OnInit {
       (error) => {
         this.errorMessage = 'Failed to load movie details';
         console.error(error);
-      }
+      },
     );
   }
 
@@ -353,7 +371,7 @@ export class AddMovieComponent implements OnInit {
       'runtime',
       'poster',
       'genres',
-      'directors'
+      'directors',
     ];
 
     // Preserve all fields from original movie except editable ones
@@ -396,7 +414,7 @@ export class AddMovieComponent implements OnInit {
         this.isLoading = false;
         this.errorMessage = error?.error?.error || 'Failed to save movie';
         console.error(error);
-      }
+      },
     );
   }
 

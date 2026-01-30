@@ -6,7 +6,10 @@ import { of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class GuestGuard implements CanActivate {
-  constructor(private auth: AuthApiService, private router: Router) {}
+  constructor(
+    private auth: AuthApiService,
+    private router: Router,
+  ) {}
 
   canActivate() {
     return this.auth.isAuthenticated().pipe(
@@ -23,7 +26,7 @@ export class GuestGuard implements CanActivate {
       catchError(() => {
         // On error, allow access to login page
         return of(true);
-      })
+      }),
     );
   }
 }

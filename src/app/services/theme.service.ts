@@ -3,7 +3,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
-  private darkModeSubject = new BehaviorSubject<boolean>(this.getInitialTheme());
+  private darkModeSubject = new BehaviorSubject<boolean>(
+    this.getInitialTheme(),
+  );
   public darkMode$ = this.darkModeSubject.asObservable();
 
   constructor() {
@@ -22,7 +24,10 @@ export class ThemeService {
 
   toggleTheme(): void {
     const newMode = !this.darkModeSubject.value;
-    console.log('[ThemeService] Toggling theme to:', newMode ? 'dark' : 'light');
+    console.log(
+      '[ThemeService] Toggling theme to:',
+      newMode ? 'dark' : 'light',
+    );
     this.darkModeSubject.next(newMode);
     localStorage.setItem('theme-mode', newMode ? 'dark' : 'light');
     this.applyTheme(newMode);
@@ -41,16 +46,27 @@ export class ThemeService {
   private applyTheme(isDark: boolean): void {
     if (typeof document === 'undefined') return;
     const html = document.documentElement;
-    console.log('[ThemeService] Applying theme - isDark:', isDark, 'html element:', html.tagName);
+    console.log(
+      '[ThemeService] Applying theme - isDark:',
+      isDark,
+      'html element:',
+      html.tagName,
+    );
 
     if (isDark) {
       html.classList.remove('light-theme');
       html.classList.add('dark-theme');
-      console.log('[ThemeService] Added dark-theme class, classList:', html.className);
+      console.log(
+        '[ThemeService] Added dark-theme class, classList:',
+        html.className,
+      );
     } else {
       html.classList.remove('dark-theme');
       html.classList.add('light-theme');
-      console.log('[ThemeService] Added light-theme class, classList:', html.className);
+      console.log(
+        '[ThemeService] Added light-theme class, classList:',
+        html.className,
+      );
     }
   }
 }
